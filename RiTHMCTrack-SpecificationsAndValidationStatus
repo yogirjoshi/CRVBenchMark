@@ -1,0 +1,37 @@
+Specifications: (In First Order LTL and Past Time LTL):
+
+1. ForAll tid, pthread_create(tid) IMPLIES EVENTUALLY pthread_running(tid)
+2. ForAll tid, pthread_mutex_lock(tid, 'ex_mutex') IMPLIES EVENTUALLY pthread_mutex_unlock(tid, 'ex_mutex')
+3. ForAll tid, pthread_create(tid) IMPLIES EVENTUALLY pthread_join(tid)
+4. ForAll tid, (pthread_mutex_lock(tid, 'ex_mutex') OR pthread_mutex_destroy(tid, 'ex_mutex') OR pthread_mutex_unlock(tid, 'ex_mutex')) IMPLIES EVENTUALLY_IN_PAST pthread_mutex_init(10000, 'ex_mutex')))
+5. ForAll tid, (pthread_exit(tid)) IMPLIES EVENTUALLY_IN_PAST pthread_mutex_unlock(tid, 'ex_mutex'))
+
+Description:
+1. This specification states that for all tids (threadIds), thread_create(tid) should be eventually followed by pthread_running(tid)
+2. This specification states that for all tids (threadIds), pthread_mutex_lock(tid,'ex_mutex')) should be eventually 
+   followed by pthread_mutex_unlock(tid, 'ex_mutex') // Here 'ex_mutex' is a constant in FOL
+3. This specification states that for all tids (threadIds), thread_create(tid) should be eventually followed by pthread_join(tid)
+4. This specification states that for all tids (threadIds), thread_mutex_lock(tid, 'ex_mutex'), pthread_mutex_destroy(tid, 'ex_mutex'), thread_mutex_unlock(tid, 'ex_mutex') should all be preceded by pthread_mutex_init(100000, 'ex_mutex'))
+   // here 100000 is the tid of main thread (main thread is not counted while evaluating the Quantifiers of FO formula)	
+5. This specification states that for all tids (threadIds), pthread_exit(tid) should be preceded somewhere in past by pthread_mutex_unlock(tid, 'ex_mutex'))
+   // here 100000 is the tid of main thread (main thread is not counted while evaluating the Quantifiers of FO formula)	   
+
+
+Verdicts:
+1. Satisfied by the program
+2. Violated by the program
+3. Violated by the program
+4. Satisfied by the program
+5. Violated by the program
+
+Some Important Notes (Please read):
+* Concrete and Abstract events are same in case of this program.
+* An event makes corresponding predicate true.                      
+  For example:                                                  
+  Event pthread_running(100) makes pthread_running(100) = true  
+* Main thread is not counted while evaluating the Quantifiers   
+  of FO formula            
+* LTL operators have usual meaning (EVENTUALLY, ALWAYS, EVENTUALLY_IN_PAST, IMPLIES, OR) are the verbose versions of standard LTL operators
+* Instrumentation information is mentioned as comments.
+* Although thread scheduling is non-deterministic, the specifications are designed such that their evaluation is deterministic
+                                       
